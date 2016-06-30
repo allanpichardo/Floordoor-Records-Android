@@ -1,0 +1,11 @@
+{
+  execution: true,
+  content: {
+    id: 2,
+    name: "Allan's Crib",
+    latitude: "40.8241769",
+    longitude: "-73.9457613",
+    created_at: null,
+    updated_at: null
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "399601165750",
+    "firebase_url": "https://floordoor-records.firebaseio.com",
+    "project_id": "floordoor-records",
+    "storage_bucket": "floordoor-records.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:399601165750:android:bfd6f629f72a96d6",
+        "android_client_info": {
+          "package_name": "com.mylovemhz.floordoorrecords"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "399601165750-d618t0ntaqh948154ep6lm794hvva3kc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-TaE338cCjGnKwsZGYR_ug420rphmdy4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

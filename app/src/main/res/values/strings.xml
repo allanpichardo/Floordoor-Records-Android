@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Floordoor Records</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="error_browser">Error launching browser</string>
+    <string name="error_article">Error loading article</string>
+    <string name="tag_news_list">news_list</string>
+    <string name="tag_news_detail">news_detail</string>
+    <string name="continue_to_downloads">Continue to Downloads</string>
+    <string name="sorry_not_at_concert">Sorry, but you don\'t seem to be at a Floordoor concert.</string>
+    <string name="sorry_explanation">Exclusive downloads are only available while you are present at a venue during a show.</string>
+    <string name="rationale_location">We would like your location to check for concerts and provide you exclusive downloads.</string>
+    <string-array name="context_options">
+        <item>Share this article</item>
+        <item>Open in browser</item>
+    </string-array>
+</resources>
