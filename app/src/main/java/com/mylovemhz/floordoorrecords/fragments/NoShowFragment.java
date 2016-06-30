@@ -11,6 +11,12 @@ import com.mylovemhz.floordoorrecords.R;
 
 public class NoShowFragment extends Fragment{
 
+    public NoShowFragment(){}
+
+    public static NoShowFragment newInstance(){
+        return new NoShowFragment();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

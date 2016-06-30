@@ -3,10 +3,10 @@
     package="com.mylovemhz.floordoorrecords">
 
     <!-- safe permissions -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <!-- dangerous permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -29,6 +29,9 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".MainActivity"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB-TaE338cCjGnKwsZGYR_ug420rphmdy4"/>
     </application>
 
 </manifest>

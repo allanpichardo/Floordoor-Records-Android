@@ -1,7 +1,10 @@
 package com.mylovemhz.floordoorrecords;
 
+import android.*;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -32,6 +35,10 @@ import com.google.android.gms.location.LocationServices;
 import com.mylovemhz.floordoorrecords.adapters.NewsAdapter;
 import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsListFragment;
+import com.mylovemhz.floordoorrecords.fragments.NoShowFragment;
+import com.mylovemhz.floordoorrecords.fragments.VenueFragment;
+import com.mylovemhz.floordoorrecords.net.Api;
+import com.mylovemhz.floordoorrecords.net.VenueResponse;
 import com.pkmmte.pkrss.Article;
 
 public class MainActivity extends AppCompatActivity
@@ -39,6 +46,9 @@ public class MainActivity extends AppCompatActivity
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_PERMISSION_LOCATION = 1;
+    private static final int REQUEST_PLAY_SERVICES = 2;
+    private static final String STATE_LOCATION = "state_location";
+    private static final String STATE_NAVIGATION = "state_navigation";
 
     private DrawerLayout drawer;
     private Toolbar toolbar;
@@ -58,6 +68,9 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
 
+        if(savedInstanceState != null){
+            onRestoreInstanceState(savedInstanceState);
+        }
         init();
     }
 
@@ -75,7 +88,7 @@ public class MainActivity extends AppCompatActivity
                 .build();
     }
 
-    protected boolean isTablet(){
+    public boolean isTablet(){
         return findViewById(R.id.detailFrame) != null;
     }
 
@@ -113,7 +126,47 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_news:
                 loadNews();
                 break;
+            case R.id.nav_live:
+                loadVenue();
+                break;
         }
+    }
+
+    private void loadVenue() {
+        if(currentLocation != null){
+            toggleProgressBar(true);
+            Api.with(this).getVenue(
+                    currentLocation,
+                    new Api.Callback<VenueResponse>() {
+                        @Override
+                        public void onResponse(VenueResponse response) {
+                            if(response.isSuccess()){
+                                attachFragment(
+                                        VenueFragment.newInstance(response),
+                                        R.id.masterFrame, getString(R.string.tag_venue));
+                            }else{
+                                attachNoShowFragment();
+                            }
+                            toggleProgressBar(false);
+                        }
+
+                        @Override
+                        public void onError() {
+                            attachNoShowFragment();
+                            toggleProgressBar(false);
+                        }
+                    }
+            );
+        }else{
+            attachNoShowFragment();
+        }
+    }
+
+    private void attachNoShowFragment(){
+        attachFragment(
+                NoShowFragment.newInstance(),
+                R.id.masterFrame, getString(R.string.tag_no_show)
+        );
     }
 
     private void attachFragment(Fragment fragment, int containerId, String tag){
@@ -173,7 +226,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void toggleProgressBar(boolean show){
+    public void toggleProgressBar(boolean show){
         setProgressBarIndeterminate(true);
         setProgressBarVisibility(show);
     }
@@ -189,7 +242,7 @@ public class MainActivity extends AppCompatActivity
     private void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
-                android.Manifest.permission.READ_CONTACTS)) {
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
             showPermissionAlert();
         } else {
             performPermissionRequest();
@@ -217,7 +270,7 @@ public class MainActivity extends AppCompatActivity
     private void performPermissionRequest() {
         ActivityCompat.requestPermissions(
                 this,
-                new String[]{android.Manifest.permission.READ_CONTACTS},
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 REQUEST_PERMISSION_LOCATION);
     }
 
@@ -232,11 +285,9 @@ public class MainActivity extends AppCompatActivity
             case REQUEST_PERMISSION_LOCATION: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+                    readLocationFromGoogleClient();
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    currentLocation = null;
                 }
                 return;
             }
@@ -287,6 +338,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        if(connectionResult.hasResolution()){
+            try {
+                connectionResult.startResolutionForResult(this, REQUEST_PLAY_SERVICES);
+            } catch (IntentSender.SendIntentException e) {
+                //GPS COULD NOT BE RESOLVED
+            }
+        }
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(STATE_LOCATION, currentLocation);
+        outState.putInt(STATE_NAVIGATION, currentNavSection);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentLocation = savedInstanceState.getParcelable(STATE_LOCATION);
+        currentNavSection = savedInstanceState.getInt(STATE_NAVIGATION);
     }
 }
