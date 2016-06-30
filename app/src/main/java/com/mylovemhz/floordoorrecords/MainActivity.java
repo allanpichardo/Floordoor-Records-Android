@@ -1,18 +1,18 @@
 package com.mylovemhz.floordoorrecords;
 
-import android.*;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,30 +21,37 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationRequestCreator;
 import com.google.android.gms.location.LocationServices;
 import com.mylovemhz.floordoorrecords.adapters.NewsAdapter;
 import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsListFragment;
 import com.pkmmte.pkrss.Article;
 
-
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, NewsAdapter.Callback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NewsAdapter.Callback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_PERMISSION_LOCATION = 1;
+
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private NavigationView navigationView;
     private GoogleApiClient googleApiClient;
 
     private int currentNavSection = R.id.nav_news;
+    private Location currentLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.activity_main);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -157,6 +164,28 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!googleApiClient.isConnected()){
+            googleApiClient.connect();
+            toggleProgressBar(true);
+        }
+    }
+
+    private void toggleProgressBar(boolean show){
+        setProgressBarIndeterminate(true);
+        setProgressBarVisibility(show);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(googleApiClient.isConnected()){
+            googleApiClient.disconnect();
+        }
+    }
+
     private void requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 this,
@@ -216,7 +245,39 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        toggleProgressBar(false);
+        if(hasLocationPermission()){
+            readLocationFromGoogleClient();
+        }else{
+            requestLocationPermission();
+        }
+    }
 
+    private void readLocationFromGoogleClient() {
+        try {
+            currentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    googleApiClient);
+            if (currentLocation == null) {
+                LocationRequest request = LocationRequest.create();
+                request.setFastestInterval(333);
+                request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                request.setNumUpdates(1);
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        googleApiClient,
+                        request,
+                        new LocationListener() {
+                            @Override
+                            public void onLocationChanged(Location location) {
+                                currentLocation = location;
+                                toggleProgressBar(false);
+                            }
+                        }
+                );
+                toggleProgressBar(true);
+            }
+        }catch(SecurityException e){
+            requestLocationPermission();
+        }
     }
 
     @Override
