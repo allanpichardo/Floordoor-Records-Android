@@ -10,6 +10,7 @@ import com.android.volley.toolbox.StringRequest;
 public class Api {
 
     public static final String URL_GET_VENUE = "https://download.floordoorrecords.com/api/venue/";
+    public static final String URL_GET_PERFORMANCES = "https://download.floordoorrecords.com/api/performances/";
 
     protected Context context;
 

@@ -306,26 +306,22 @@ public class MainActivity extends AppCompatActivity
 
     private void readLocationFromGoogleClient() {
         try {
-            currentLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    googleApiClient);
-            if (currentLocation == null) {
-                LocationRequest request = LocationRequest.create();
-                request.setFastestInterval(333);
-                request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-                request.setNumUpdates(1);
-                LocationServices.FusedLocationApi.requestLocationUpdates(
-                        googleApiClient,
-                        request,
-                        new LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                currentLocation = location;
-                                toggleProgressBar(false);
-                            }
+            LocationRequest request = LocationRequest.create();
+            request.setFastestInterval(333);
+            request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            request.setNumUpdates(1);
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    googleApiClient,
+                    request,
+                    new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            currentLocation = location;
+                            toggleProgressBar(false);
                         }
-                );
-                toggleProgressBar(true);
-            }
+                    }
+            );
+            toggleProgressBar(true);
         }catch(SecurityException e){
             requestLocationPermission();
         }

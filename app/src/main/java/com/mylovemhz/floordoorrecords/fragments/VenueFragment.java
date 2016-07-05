@@ -83,21 +83,25 @@ public class VenueFragment extends Fragment {
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                googleMap.moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(venueResponse.getLatitude(), venueResponse.getLongitude()),
-                                13
-                        )
-                );
-                googleMap.addMarker(
-                        new MarkerOptions()
-                                .position(new LatLng(venueResponse.getLatitude(), venueResponse.getLongitude()))
-                );
+                zoomIntoVenue(googleMap);
             }
         });
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.mapCard, mapFragment);
         ft.commit();
+    }
+
+    private void zoomIntoVenue(GoogleMap googleMap){
+        googleMap.moveCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(venueResponse.getLatitude(), venueResponse.getLongitude()),
+                        13
+                )
+        );
+        googleMap.addMarker(
+                new MarkerOptions()
+                        .position(new LatLng(venueResponse.getLatitude(), venueResponse.getLongitude()))
+        );
     }
 
     protected boolean isTablet(){
