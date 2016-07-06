@@ -13,6 +13,7 @@ public class VenueResponse implements Parcelable{
     private String name;
     private double latitude;
     private double longitude;
+    private String imageUrl;
 
     public VenueResponse(String response){
         try {
@@ -23,6 +24,7 @@ public class VenueResponse implements Parcelable{
             name = content.getString("name");
             latitude = content.getDouble("latitude");
             longitude = content.getDouble("longitude");
+            imageUrl = content.getString("image_url");
         } catch (JSONException e) {
             isSuccess = false;
         }
@@ -34,6 +36,7 @@ public class VenueResponse implements Parcelable{
         name = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
+        imageUrl = in.readString();
     }
 
     public boolean isSuccess() {
@@ -56,6 +59,10 @@ public class VenueResponse implements Parcelable{
         return latitude;
     }
 
+    public String getImageUrl(){
+        return imageUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -68,6 +75,7 @@ public class VenueResponse implements Parcelable{
         dest.writeString(name);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
+        dest.writeString(imageUrl);
     }
 
     public static final Parcelable.Creator<VenueResponse> CREATOR

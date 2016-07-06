@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,15 +21,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.mylovemhz.floordoorrecords.MainActivity;
 import com.mylovemhz.floordoorrecords.R;
+import com.mylovemhz.floordoorrecords.net.AlbumResponse;
+import com.mylovemhz.floordoorrecords.net.Api;
+import com.mylovemhz.floordoorrecords.net.PerformanceResponse;
 import com.mylovemhz.floordoorrecords.net.VenueResponse;
+import com.squareup.picasso.Picasso;
 
-public class VenueFragment extends Fragment {
+import java.util.List;
+
+import jp.wasabeef.picasso.transformations.BlurTransformation;
+
+public class VenueFragment extends Fragment implements View.OnClickListener{
 
     private static final String STATE_VENUE = "state_venue";
     private ImageView venueImage;
     private TextView venueNameText;
     private Button continueButton;
     private VenueResponse venueResponse;
+    private Callback callback;
 
     public VenueFragment(){}
 
@@ -71,8 +81,17 @@ public class VenueFragment extends Fragment {
         continueButton.setVisibility(
                 isTablet() ? View.INVISIBLE : View.VISIBLE
         );
+        continueButton.setOnClickListener(this);
         venueNameText.setText(venueResponse.getName());
         attachMapToCard();
+        try {
+            Picasso.with(getContext())
+                    .load(venueResponse.getImageUrl())
+                    .transform(new BlurTransformation(getContext(), 10))
+                    .into(venueImage);
+        }catch(IllegalArgumentException e){
+            //skip image
+        }
     }
 
     protected void attachMapToCard(){
@@ -120,5 +139,63 @@ public class VenueFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(STATE_VENUE, venueResponse);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onClick(View v) {
+        loadGifts();
+    }
+
+    public void toggleProgressBar(boolean visible){
+        ((MainActivity)getActivity()).toggleProgressBar(visible);
+    }
+
+    private void loadGifts() {
+        toggleProgressBar(true);
+        Api.with(getContext())
+                .getPerformances(
+                        venueResponse.getId(),
+                        new Api.Callback<PerformanceResponse>() {
+                            @Override
+                            public void onResponse(PerformanceResponse response) {
+                                if(response.isSuccess()){
+                                    loadMetadata(response.getPerformances());
+                                }else{
+                                    toggleProgressBar(false);
+                                    if(callback != null) callback.onNoDownloadsFound();
+                                }
+                            }
+
+                            @Override
+                            public void onError() {
+                                toggleProgressBar(false);
+                                if(callback != null) callback.onNoDownloadsFound();
+                            }
+                        }
+                );
+    }
+
+    private void loadMetadata(List<PerformanceResponse.Performance> performances) {
+        Api.with(getContext())
+                .getAlbumInfo(performances, new Api.Callback<List<AlbumResponse>>() {
+                    @Override
+                    public void onResponse(List<AlbumResponse> response) {
+                        if(callback != null) callback.onDownloadsLoaded(response);
+                    }
+
+                    @Override
+                    public void onError() {
+                        if(callback != null) callback.onNoDownloadsFound();
+                    }
+                });
+    }
+
+    public void setCallback(Callback callback){
+        this.callback = callback;
+    }
+
+    public interface Callback{
+        void onDownloadsLoaded(List<AlbumResponse> albumResponseList);
+        void onNoDownloadsFound();
     }
 }
