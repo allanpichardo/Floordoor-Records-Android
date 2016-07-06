@@ -123,8 +123,7 @@ public class Api {
      * @param callback
      */
     public void getAlbumInfo(List<PerformanceResponse.Performance> peformances, final Callback<List<AlbumResponse>> callback){
-        AsyncTask<List<PerformanceResponse.Performance>, Void, List<AlbumResponse>> task
-                = new AsyncTask<List<PerformanceResponse.Performance>, Void, List<AlbumResponse>>() {
+        new AsyncTask<List<PerformanceResponse.Performance>, Void, List<AlbumResponse>>() {
 
             @Override
             protected List<AlbumResponse> doInBackground(List<PerformanceResponse.Performance>... params) {
@@ -142,7 +141,7 @@ public class Api {
                     } catch (ExecutionException e) {
                         return null;
                     } catch (TimeoutException e) {
-                        return null;
+                        continue;
                     }
                 }
                 return responses;
@@ -156,8 +155,7 @@ public class Api {
                     callback.onError();
                 }
             }
-        };
-        task.execute(peformances);
+        }.execute(peformances);
 
     }
 

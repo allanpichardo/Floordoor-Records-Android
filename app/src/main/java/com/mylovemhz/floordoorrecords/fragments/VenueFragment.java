@@ -42,9 +42,10 @@ public class VenueFragment extends Fragment implements View.OnClickListener{
 
     public VenueFragment(){}
 
-    public static VenueFragment newInstance(VenueResponse venueResponse){
+    public static VenueFragment newInstance(VenueResponse venueResponse, Callback callback){
         VenueFragment fragment = new VenueFragment();
         fragment.setVenueResponse(venueResponse);
+        fragment.setCallback(callback);
         return fragment;
     }
 
@@ -83,7 +84,11 @@ public class VenueFragment extends Fragment implements View.OnClickListener{
         );
         continueButton.setOnClickListener(this);
         venueNameText.setText(venueResponse.getName());
+
         attachMapToCard();
+
+        if(isTablet()) loadGifts();
+
         try {
             Picasso.with(getContext())
                     .load(venueResponse.getImageUrl())
