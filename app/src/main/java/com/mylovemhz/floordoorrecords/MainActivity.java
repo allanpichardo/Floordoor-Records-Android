@@ -37,13 +37,18 @@ import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsListFragment;
 import com.mylovemhz.floordoorrecords.fragments.NoShowFragment;
 import com.mylovemhz.floordoorrecords.fragments.VenueFragment;
+import com.mylovemhz.floordoorrecords.net.AlbumResponse;
 import com.mylovemhz.floordoorrecords.net.Api;
 import com.mylovemhz.floordoorrecords.net.VenueResponse;
 import com.pkmmte.pkrss.Article;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NewsAdapter.Callback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        VenueFragment.Callback {
 
     private static final int REQUEST_PERMISSION_LOCATION = 1;
     private static final int REQUEST_PLAY_SERVICES = 2;
@@ -142,7 +147,7 @@ public class MainActivity extends AppCompatActivity
                         public void onResponse(VenueResponse response) {
                             if(response.isSuccess()){
                                 attachFragment(
-                                        VenueFragment.newInstance(response),
+                                        VenueFragment.newInstance(response, MainActivity.this),
                                         R.id.masterFrame, getString(R.string.tag_venue));
                             }else{
                                 attachNoShowFragment();
@@ -211,7 +216,6 @@ public class MainActivity extends AppCompatActivity
             attachFragment(newsDetailFragment, R.id.detailFrame, getString(R.string.tag_news_detail));
         }else{
             Intent intent = new Intent(this, DetailActivity.class);
-            intent.putExtra(DetailActivity.ARG_NEWS,true);
             intent.putExtra(DetailActivity.ARG_ARTICLE, article);
             startActivity(intent);
         }
@@ -355,5 +359,29 @@ public class MainActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
         currentLocation = savedInstanceState.getParcelable(STATE_LOCATION);
         currentNavSection = savedInstanceState.getInt(STATE_NAVIGATION);
+    }
+
+    @Override
+    public void onDownloadsLoaded(List<AlbumResponse> albumResponseList) {
+        if(isTablet()){
+            loadDownloadsInSideFrame(albumResponseList);
+        }else{
+            loadDownloadsInDetailActivity((ArrayList<AlbumResponse>) albumResponseList);
+        }
+    }
+
+    private void loadDownloadsInDetailActivity(ArrayList<AlbumResponse> albumResponseList) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putParcelableArrayListExtra(DetailActivity.ARG_ALBUM_LIST, albumResponseList);
+        startActivity(intent);
+    }
+
+    private void loadDownloadsInSideFrame(List<AlbumResponse> albumResponseList) {
+
+    }
+
+    @Override
+    public void onNoDownloadsFound() {
+        Intent intent = new I
     }
 }

@@ -10,14 +10,18 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
+import com.mylovemhz.floordoorrecords.net.AlbumResponse;
 import com.pkmmte.pkrss.Article;
+
+import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static final String ARG_NEWS = "news";
     public static final String ARG_ARTICLE = "article";
     public static final String ARG_STREAM = "stream";
     public static final String ARG_EXCLUSIVE = "exclusive";
+    public static final String ARG_ALBUM_LIST = "album_list";
+    public static final String ARG_NO_DOWNLOADS = "no_downloads";
 
     private Toolbar toolbar;
 
@@ -36,9 +40,18 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void initWithIntent(Intent intent) {
-        if(intent.hasExtra(ARG_NEWS)){
+        if(intent.hasExtra(ARG_ARTICLE)){
             initNewsDetail(intent);
+        }else if(intent.hasExtra(ARG_ALBUM_LIST)){
+            initDownloadDetail(intent);
+        }else if(intent.hasExtra(ARG_NO_DOWNLOADS)){
+
         }
+    }
+
+    private void initDownloadDetail(Intent intent) {
+        ArrayList<AlbumResponse> albums = intent.getExtras().getParcelableArrayList(ARG_ALBUM_LIST);
+
     }
 
     private void initNewsDetail(Intent intent) {
