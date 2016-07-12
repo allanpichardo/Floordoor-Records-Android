@@ -382,6 +382,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onNoDownloadsFound() {
-        Intent intent = new I
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra(DetailActivity.ARG_NO_DOWNLOADS, true);
+        startActivity(intent);
     }
 }

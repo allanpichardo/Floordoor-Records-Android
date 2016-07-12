@@ -12,6 +12,7 @@ public class AlbumResponse implements Parcelable{
     private String artist;
     private String title;
     private String imageUrl;
+    private int albumId;
 
     public AlbumResponse(String response){
         try {
@@ -21,6 +22,7 @@ public class AlbumResponse implements Parcelable{
             artist = content.getString("artist");
             title = content.getString("title");
             imageUrl = content.getString("image_url");
+            albumId = content.getInt("album_id");
         } catch (JSONException e) {
             isSuccess = false;
         }
@@ -31,6 +33,7 @@ public class AlbumResponse implements Parcelable{
         artist = in.readString();
         title = in.readString();
         imageUrl = in.readString();
+        albumId = in.readInt();
     }
 
     public static final Creator<AlbumResponse> CREATOR = new Creator<AlbumResponse>() {
@@ -56,6 +59,7 @@ public class AlbumResponse implements Parcelable{
         dest.writeString(artist);
         dest.writeString(title);
         dest.writeString(imageUrl);
+        dest.writeInt(albumId);
     }
 
     public boolean isSuccess() {
@@ -72,5 +76,9 @@ public class AlbumResponse implements Parcelable{
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public int getAlbumId() {
+        return albumId;
     }
 }

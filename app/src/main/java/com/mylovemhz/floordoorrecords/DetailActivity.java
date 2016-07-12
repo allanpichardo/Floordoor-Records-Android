@@ -10,6 +10,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
+import com.mylovemhz.floordoorrecords.fragments.NoShowFragment;
 import com.mylovemhz.floordoorrecords.net.AlbumResponse;
 import com.pkmmte.pkrss.Article;
 
@@ -45,8 +46,14 @@ public class DetailActivity extends AppCompatActivity {
         }else if(intent.hasExtra(ARG_ALBUM_LIST)){
             initDownloadDetail(intent);
         }else if(intent.hasExtra(ARG_NO_DOWNLOADS)){
-
+            initNoDownloads();
         }
+    }
+
+    private void initNoDownloads() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.detailFrame, NoShowFragment.newInstance());
+        ft.commit();
     }
 
     private void initDownloadDetail(Intent intent) {
