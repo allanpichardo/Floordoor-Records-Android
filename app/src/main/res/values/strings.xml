@@ -13,6 +13,7 @@
     <string name="rationale_location">We would like your location to check for concerts and provide you exclusive downloads.</string>
     <string name="tag_venue">tag_venue</string>
     <string name="tag_no_show">tag_no_show</string>
+    <string name="download">Download</string>
     <string-array name="context_options">
         <item>Share this article</item>
         <item>Open in browser</item>
