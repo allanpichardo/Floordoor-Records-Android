@@ -38,6 +38,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
     compile 'com.google.android.gms:play-services-maps:9.2.0'
     compile 'com.google.android.gms:play-services-location:9.2.0'
+    compile 'commons-validator:commons-validator:1.5.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

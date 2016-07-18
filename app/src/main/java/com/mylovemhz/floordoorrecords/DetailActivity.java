@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.mylovemhz.floordoorrecords.fragments.DownloadsFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
 import com.mylovemhz.floordoorrecords.fragments.NoShowFragment;
 import com.mylovemhz.floordoorrecords.net.AlbumResponse;
@@ -58,7 +59,10 @@ public class DetailActivity extends AppCompatActivity {
 
     private void initDownloadDetail(Intent intent) {
         ArrayList<AlbumResponse> albums = intent.getExtras().getParcelableArrayList(ARG_ALBUM_LIST);
-
+        getSupportActionBar().setTitle(R.string.available_downloads);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.detailFrame, DownloadsFragment.newInstance(albums));
+        ft.commit();
     }
 
     private void initNewsDetail(Intent intent) {

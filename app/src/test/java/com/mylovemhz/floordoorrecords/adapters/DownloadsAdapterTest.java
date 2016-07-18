@@ -69,6 +69,7 @@ public class DownloadsAdapterTest {
         DownloadsAdapter.ViewHolder viewHolder = adapter.onCreateViewHolder(new LinearLayout(context), 0);
         adapter.onBindViewHolder(viewHolder,0);
         View itemView = adapter.viewHolders.get(0).itemView;
+        assertNotNull(itemView);
 
         CheckBox checkBox = (CheckBox) itemView.findViewById(R.id.checkBox);
         assertFalse(checkBox.isChecked());
@@ -99,6 +100,7 @@ public class DownloadsAdapterTest {
         assertEquals(0, adapter.getSelections().size());
         assertFalse(checkBox.isChecked());
         adapter.setSelections(selection);
+        adapter.notifyDataSetChanged();
         assertEquals(1, adapter.getSelections().size());
         assertTrue(checkBox.isChecked());
     }
