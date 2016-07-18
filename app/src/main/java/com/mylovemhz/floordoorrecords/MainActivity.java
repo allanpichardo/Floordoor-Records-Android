@@ -25,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,6 +41,7 @@ import com.mylovemhz.floordoorrecords.fragments.VenueFragment;
 import com.mylovemhz.floordoorrecords.net.AlbumResponse;
 import com.mylovemhz.floordoorrecords.net.Api;
 import com.mylovemhz.floordoorrecords.net.VenueResponse;
+import com.mylovemhz.floordoorrecords.persistence.LocalStore;
 import com.pkmmte.pkrss.Article;
 
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity
     private static final String STATE_LOCATION = "state_location";
     private static final String STATE_NAVIGATION = "state_navigation";
 
+    private TextView emailText;
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private NavigationView navigationView;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        emailText = (TextView) navigationView.getHeaderView(0).findViewById(R.id.emailText);
 
         if(savedInstanceState != null){
             onRestoreInstanceState(savedInstanceState);
@@ -228,6 +232,13 @@ public class MainActivity extends AppCompatActivity
             googleApiClient.connect();
             toggleProgressBar(true);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String lastEmail = LocalStore.with(this).getLastUsedEmail();
+        emailText.setText(lastEmail);
     }
 
     public void toggleProgressBar(boolean show){

@@ -21,7 +21,7 @@
         <item>Open in browser</item>
     </string-array>
     <string name="about_floordoor">
-        We appreciate your support of our craft, and as lifelong fans of music, there's no greater joy than going to a great live show. We want to say thank you for coming to see our artists perform. As a token of our gratitude, we decided to break down as many barriers as possible between you and the music. This application will allow you to access exclusive downloads from Floordoor for free whenever you're in attendance at one of our shows.
+        We appreciate your support of our craft, and as lifelong fans of music, there\'s no greater joy than going to a great live show. We want to say thank you for coming to see our artists perform. As a token of our gratitude, we decided to break down as many barriers as possible between you and the music. This application will allow you to access exclusive downloads from Floordoor for free whenever you\'re in attendance at one of our shows.
         \n
 We hope you enjoy it.
 \n
@@ -29,4 +29,7 @@ We hope you enjoy it.
 Cheers,
 The Floordoor Family
     </string>
+    <string name="download_progress">We are emailing your download links...</string>
+    <string name="check_email">Check your email shortly.</string>
+    <string name="error_download">There was a problem sending your download. Please try again.</string>
 </resources>

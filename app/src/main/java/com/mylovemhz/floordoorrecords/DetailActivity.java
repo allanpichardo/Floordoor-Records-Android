@@ -17,7 +17,7 @@ import com.pkmmte.pkrss.Article;
 
 import java.util.ArrayList;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements DownloadsFragment.Callback {
 
     public static final String ARG_ARTICLE = "article";
     public static final String ARG_STREAM = "stream";
@@ -61,7 +61,7 @@ public class DetailActivity extends AppCompatActivity {
         ArrayList<AlbumResponse> albums = intent.getExtras().getParcelableArrayList(ARG_ALBUM_LIST);
         getSupportActionBar().setTitle(R.string.available_downloads);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.detailFrame, DownloadsFragment.newInstance(albums));
+        ft.replace(R.id.detailFrame, DownloadsFragment.newInstance(albums, this));
         ft.commit();
     }
 
@@ -75,5 +75,10 @@ public class DetailActivity extends AppCompatActivity {
         }else{
             Toast.makeText(this,R.string.error_article,Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onDownloadsSent() {
+        finish();
     }
 }

@@ -26,6 +26,7 @@ public class Api {
     public static final String URL_GET_VENUE = "https://download.floordoorrecords.com/api/venue/";
     public static final String URL_GET_PERFORMANCES = "https://download.floordoorrecords.com/api/performances/";
     public static final String URL_GET_ALBUM = "https://download.floordoorrecords.com/api/album/";
+    public static final String URL_POST_DOWNLOAD = "https://download.floordoorrecords.com/api/album";
 
     protected Context context;
 
@@ -166,7 +167,7 @@ public class Api {
      * @param callback
      */
     public void requestDownloads(final List<Integer> albumIds, final String email, final Callback<DownloadResponse> callback){
-        String url = URL_GET_ALBUM;
+        String url = URL_POST_DOWNLOAD;
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
