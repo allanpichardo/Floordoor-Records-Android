@@ -6,8 +6,17 @@
     app:cardUseCompatPadding="true"
     xmlns:tools="http://schemas.android.com/tools">
     <RelativeLayout
+        android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/featuredImage"
+            android:scaleType="centerCrop"
+            android:minHeight="250dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true" />
         <TextView
             android:id="@+id/dateText"
             tools:text="June 25"
@@ -16,12 +25,13 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:maxLength="20"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <ImageButton
             android:id="@+id/contextButton"
             android:src="@drawable/ic_more_horiz_black_24dp"
+            android:tint="@color/cardview_light_background"
             style="?android:attr/borderlessButtonStyle"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
@@ -33,7 +43,7 @@
             tools:text="Lorem Ipsum lorem ipsum lorem ipsum. Lorem Ipsum lorem ipsum lorem ipsum."
             android:maxLength="50"
             android:ellipsize="end"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
             android:layout_below="@+id/dateText"
             android:layout_alignLeft="@+id/dateText"
             android:layout_alignStart="@+id/dateText"
@@ -47,7 +57,7 @@
             android:layout_marginTop="@dimen/margin_default"
             android:layout_marginBottom="@dimen/margin_default"
             tools:text="Please join us at C’mon Everybody in Brooklyn on May 29 as we celebrate the launch of our label. We’ll be offering exclusive downloads of A Bunch of Dead People‘s new record “Your Eternal Reward” for those in attendance. We would also like to thank our esteemed friend Jake Remington for shooting and editing this "
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
             android:ellipsize="end"
             android:maxLength="300"
             android:layout_width="match_parent"

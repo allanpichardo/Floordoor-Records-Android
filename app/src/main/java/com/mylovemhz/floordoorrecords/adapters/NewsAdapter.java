@@ -11,15 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mylovemhz.floordoorrecords.BuildConfig;
 import com.mylovemhz.floordoorrecords.R;
+import com.mylovemhz.floordoorrecords.net.FdRss2Parser;
 import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.Callback;
 import com.pkmmte.pkrss.PkRSS;
+import com.pkmmte.pkrss.RequestCreator;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,6 +31,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import jp.wasabeef.picasso.transformations.BlurTransformation;
+import jp.wasabeef.picasso.transformations.gpu.BrightnessFilterTransformation;
 
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> implements Callback {
@@ -61,8 +68,10 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
     }
 
     public void refresh(int page){
-        PkRSS.with(context)
-                .load(BuildConfig.FLOORDOOR_RSS_URL)
+        PkRSS.Builder builder = new PkRSS.Builder(context);
+        builder.parser(new FdRss2Parser());
+        PkRSS pkRSS = builder.build();
+        pkRSS.load(BuildConfig.FLOORDOOR_RSS_URL)
                 .page(page)
                 .callback(this)
                 .async();
@@ -122,6 +131,16 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         holder.dateText.setText(sdf.format(calendar.getTime()));
         holder.titleText.setText(Html.fromHtml(article.getTitle()));
         holder.summaryText.setText(Html.fromHtml(article.getDescription()));
+
+        try{
+            Picasso.with(context)
+                    .load(article.getImage())
+                    .transform(new BlurTransformation(context,10))
+                    .into(holder.featuredImage);
+        }catch(IllegalArgumentException e){
+            holder.featuredImage.setImageResource(R.drawable.ic_logo_gray);
+        }
+
         holder.contextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,6 +235,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         ImageButton contextButton;
         TextView titleText;
         TextView summaryText;
+        ImageView featuredImage;
 
         //Loading
         ProgressBar progressBar;
@@ -228,6 +248,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
                 contextButton = (ImageButton) itemView.findViewById(R.id.contextButton);
                 titleText = (TextView) itemView.findViewById(R.id.titleText);
                 summaryText = (TextView) itemView.findViewById(R.id.summaryText);
+                featuredImage = (ImageView) itemView.findViewById(R.id.featuredImage);
             }else if(viewType == TYPE_LOADING){
                 progressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
             }
