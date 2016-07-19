@@ -32,4 +32,10 @@ The Floordoor Family
     <string name="download_progress">We are emailing your download links...</string>
     <string name="check_email">Check your email shortly.</string>
     <string name="error_download">There was a problem sending your download. Please try again.</string>
+
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="error_no_play_services">This app cannot function without Google Play Services. Please install Google Play Services from the Play Store and then try again.</string>
+    <string name="ok">OK</string>
 </resources>

@@ -25,15 +25,13 @@ public class DetailActivity extends AppCompatActivity implements DownloadsFragme
     public static final String ARG_ALBUM_LIST = "album_list";
     public static final String ARG_NO_DOWNLOADS = "no_downloads";
 
-    private Toolbar toolbar;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.activity_detail);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

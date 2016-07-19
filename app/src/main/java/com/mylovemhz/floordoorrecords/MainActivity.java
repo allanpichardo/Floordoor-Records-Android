@@ -1,38 +1,22 @@
 package com.mylovemhz.floordoorrecords;
 
-import android.*;
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationRequestCreator;
-import com.google.android.gms.location.LocationServices;
 import com.mylovemhz.floordoorrecords.adapters.NewsAdapter;
 import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsListFragment;
@@ -49,19 +33,16 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NewsAdapter.Callback,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         VenueFragment.Callback {
 
-    private static final int REQUEST_PERMISSION_LOCATION = 1;
-    private static final int REQUEST_PLAY_SERVICES = 2;
     private static final String STATE_LOCATION = "state_location";
     private static final String STATE_NAVIGATION = "state_navigation";
+    public static final String ARG_LOCATION = "location";
 
     private TextView emailText;
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private NavigationView navigationView;
-    private GoogleApiClient googleApiClient;
 
     private int currentNavSection = R.id.nav_news;
     private Location currentLocation;
@@ -84,18 +65,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void init(){
-        initGoogleApiClient();
         setSupportActionBar(toolbar);
         configureNavigationDrawer();
+        initLocationFromIntent();
     }
 
-    private void initGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
+    private void initLocationFromIntent() {
+        if(getIntent().hasExtra(ARG_LOCATION)){
+            currentLocation = getIntent().getParcelableExtra(ARG_LOCATION);
+        }
     }
+
 
     public boolean isTablet(){
         return findViewById(R.id.detailFrame) != null;
@@ -226,15 +206,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if(!googleApiClient.isConnected()){
-            googleApiClient.connect();
-            toggleProgressBar(true);
-        }
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         String lastEmail = LocalStore.with(this).getLastUsedEmail();
@@ -244,118 +215,6 @@ public class MainActivity extends AppCompatActivity
     public void toggleProgressBar(boolean show){
         setProgressBarIndeterminate(true);
         setProgressBarVisibility(show);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(googleApiClient.isConnected()){
-            googleApiClient.disconnect();
-        }
-    }
-
-    private void requestLocationPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
-            showPermissionAlert();
-        } else {
-            performPermissionRequest();
-        }
-    }
-
-    private void showPermissionAlert() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage(R.string.rationale_location);
-        alert.setPositiveButton("Yes, grant access", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                performPermissionRequest();
-            }
-        });
-        alert.setNegativeButton("No, don't use my location", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        alert.show();
-    }
-
-    private void performPermissionRequest() {
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                REQUEST_PERMISSION_LOCATION);
-    }
-
-    private boolean hasLocationPermission() {
-        int permission = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
-        return permission == PackageManager.PERMISSION_GRANTED;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_PERMISSION_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    readLocationFromGoogleClient();
-                } else {
-                    currentLocation = null;
-                }
-                return;
-            }
-        }
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        toggleProgressBar(false);
-        if(hasLocationPermission()){
-            readLocationFromGoogleClient();
-        }else{
-            requestLocationPermission();
-        }
-    }
-
-    private void readLocationFromGoogleClient() {
-        try {
-            LocationRequest request = LocationRequest.create();
-            request.setFastestInterval(333);
-            request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-            request.setNumUpdates(1);
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    googleApiClient,
-                    request,
-                    new LocationListener() {
-                        @Override
-                        public void onLocationChanged(Location location) {
-                            currentLocation = location;
-                            toggleProgressBar(false);
-                        }
-                    }
-            );
-            toggleProgressBar(true);
-        }catch(SecurityException e){
-            requestLocationPermission();
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        if(connectionResult.hasResolution()){
-            try {
-                connectionResult.startResolutionForResult(this, REQUEST_PLAY_SERVICES);
-            } catch (IntentSender.SendIntentException e) {
-                //GPS COULD NOT BE RESOLVED
-            }
-        }
     }
 
     @Override
