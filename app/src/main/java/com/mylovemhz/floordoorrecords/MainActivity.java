@@ -18,6 +18,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.mylovemhz.floordoorrecords.adapters.NewsAdapter;
+import com.mylovemhz.floordoorrecords.fragments.AboutFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsListFragment;
 import com.mylovemhz.floordoorrecords.fragments.NoShowFragment;
@@ -118,7 +119,16 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_live:
                 loadVenue();
                 break;
+            case R.id.nav_about:
+                loadAbout();
+                break;
         }
+    }
+
+    private void loadAbout() {
+        attachFragment(
+                AboutFragment.newInstance(),R.id.masterFrame,getString(R.string.tag_about)
+        );
     }
 
     private void loadVenue() {

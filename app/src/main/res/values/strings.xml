@@ -22,11 +22,10 @@
     </string-array>
     <string name="about_floordoor">
         We appreciate your support of our craft, and as lifelong fans of music, there\'s no greater joy than going to a great live show. We want to say thank you for coming to see our artists perform. As a token of our gratitude, we decided to break down as many barriers as possible between you and the music. This application will allow you to access exclusive downloads from Floordoor for free whenever you\'re in attendance at one of our shows.
-        \n
-We hope you enjoy it.
+        \nWe hope you enjoy it.
 \n
 \n
-Cheers,
+Cheers,\n\n
 The Floordoor Family
     </string>
     <string name="download_progress">We are emailing your download links...</string>
@@ -38,4 +37,7 @@ The Floordoor Family
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="error_no_play_services">This app cannot function without Google Play Services. Please install Google Play Services from the Play Store and then try again.</string>
     <string name="ok">OK</string>
+    <string name="www_floordoorrecords_com">www.floordoorrecords.com</string>
+    <string name="floordoorurl">http://www.floordoorrecords.com</string>
+    <string name="tag_about">tag_about</string>
 </resources>
