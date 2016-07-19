@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.mylovemhz.floordoorrecords.adapters.NewsAdapter;
 import com.mylovemhz.floordoorrecords.fragments.AboutFragment;
+import com.mylovemhz.floordoorrecords.fragments.DownloadsFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsDetailFragment;
 import com.mylovemhz.floordoorrecords.fragments.NewsListFragment;
 import com.mylovemhz.floordoorrecords.fragments.NoShowFragment;
@@ -257,7 +258,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadDownloadsInSideFrame(List<AlbumResponse> albumResponseList) {
+        attachFragment(
+                DownloadsFragment.newInstance(albumResponseList, new DownloadsFragment.Callback() {
+                    @Override
+                    public void onDownloadsSent() {
 
+                    }
+                }),
+                R.id.detailFrame, "tag_download_list"
+        );
     }
 
     @Override
