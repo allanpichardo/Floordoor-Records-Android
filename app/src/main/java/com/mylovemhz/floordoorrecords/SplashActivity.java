@@ -163,7 +163,23 @@ public class SplashActivity extends AppCompatActivity
             } catch (IntentSender.SendIntentException e) {
                 warnUserGooglePlayServicesRequired();
             }
+        }else{
+            if(connectionResult.getErrorCode() == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED){
+                warnUserGooglePlayServicesUpgradeRequired();
+            }
         }
+    }
+
+    private void warnUserGooglePlayServicesUpgradeRequired() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setMessage(R.string.error_upgrade_play_services);
+        alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        alert.show();
     }
 
     private void warnUserGooglePlayServicesRequired() {
