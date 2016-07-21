@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -127,6 +128,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadAbout() {
+        if(isTablet()) clearAllFragmentsFromDetailFrame();
+
         attachFragment(
                 AboutFragment.newInstance(),R.id.masterFrame,getString(R.string.tag_about)
         );
@@ -141,9 +144,7 @@ public class MainActivity extends AppCompatActivity
                         @Override
                         public void onResponse(VenueResponse response) {
                             if(response.isSuccess()){
-                                attachFragment(
-                                        VenueFragment.newInstance(response, MainActivity.this),
-                                        R.id.masterFrame, getString(R.string.tag_venue));
+                                attachVenueFragmentinMasterFrame(response);
                             }else{
                                 attachNoShowFragment();
                             }
@@ -162,7 +163,32 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void attachVenueFragmentinMasterFrame(VenueResponse response) {
+        if(isTablet()) clearAllFragmentsFromDetailFrame();
+
+        attachFragment(
+                VenueFragment.newInstance(response, MainActivity.this),
+                R.id.masterFrame, getString(R.string.tag_venue));
+    }
+
+    private void clearAllFragmentsFromDetailFrame(){
+        removeFragment(getString(R.string.tag_news_detail));
+        removeFragment(getString(R.string.tag_download_detail));
+        invalidateLayout();
+    }
+
+    private void removeFragment(String tag){
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if(fragment != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.remove(fragment);
+            ft.commit();
+        }
+    }
+
     private void attachNoShowFragment(){
+        if(isTablet()) clearAllFragmentsFromDetailFrame();
+
         attachFragment(
                 NoShowFragment.newInstance(),
                 R.id.masterFrame, getString(R.string.tag_no_show)
@@ -177,6 +203,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     protected void loadNews() {
+        if(isTablet()) clearAllFragmentsFromDetailFrame();
+
         final NewsListFragment newsListFragment = NewsListFragment.newInstance(this);
         newsListFragment.setOnReadyListener(new NewsListFragment.OnReadyListener() {
             @Override
@@ -194,10 +222,10 @@ public class MainActivity extends AppCompatActivity
         handler.post(new Runnable() {
             @Override
             public void run() {
-                if(fragment.getNewsAdapter().getItemCount() > 0){
+                try{
                     fragment.getNewsAdapter().selectItem(0);
                     handler.removeCallbacks(this);
-                }else{
+                }catch(IndexOutOfBoundsException e){
                     handler.postDelayed(this, 200);
                 }
             }
@@ -209,10 +237,18 @@ public class MainActivity extends AppCompatActivity
         if(isTablet()){
             NewsDetailFragment newsDetailFragment = NewsDetailFragment.newInstance(article);
             attachFragment(newsDetailFragment, R.id.detailFrame, getString(R.string.tag_news_detail));
+            invalidateLayout();
         }else{
             Intent intent = new Intent(this, DetailActivity.class);
             intent.putExtra(DetailActivity.ARG_ARTICLE, article);
             startActivity(intent);
+        }
+    }
+
+    private void invalidateLayout() {
+        View view = findViewById(R.id.masterDetailLayout);
+        if(view != null){
+            view.invalidate();
         }
     }
 
@@ -248,6 +284,7 @@ public class MainActivity extends AppCompatActivity
             loadDownloadsInSideFrame(albumResponseList);
         }else{
             loadDownloadsInDetailActivity((ArrayList<AlbumResponse>) albumResponseList);
+            invalidateLayout();
         }
     }
 
@@ -265,7 +302,7 @@ public class MainActivity extends AppCompatActivity
 
                     }
                 }),
-                R.id.detailFrame, "tag_download_list"
+                R.id.detailFrame, getString(R.string.tag_download_detail)
         );
     }
 

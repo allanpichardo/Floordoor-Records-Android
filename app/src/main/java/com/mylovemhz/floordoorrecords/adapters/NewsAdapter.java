@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 import jp.wasabeef.picasso.transformations.BlurTransformation;
+import jp.wasabeef.picasso.transformations.gpu.BrightnessFilterTransformation;
 
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> implements Callback {
@@ -133,7 +134,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         try{
             Picasso.with(context)
                     .load(article.getImage())
-                    .transform(new BlurTransformation(context,20))
+                    .transform(new BlurTransformation(context,15))
+                    .transform(new BrightnessFilterTransformation(context, -0.3f))
                     .into(holder.featuredImage);
         }catch(IllegalArgumentException e){
             holder.featuredImage.setImageResource(R.drawable.ic_logo_gray);

@@ -41,4 +41,5 @@ The Floordoor Family
     <string name="floordoorurl">http://www.floordoorrecords.com</string>
     <string name="tag_about">tag_about</string>
     <string name="error_upgrade_play_services">Google Play Services is outdated. Please go to the Play Store and update Google Play Services before using this app.</string>
+    <string name="tag_download_detail">tag_download_list</string>
 </resources>
