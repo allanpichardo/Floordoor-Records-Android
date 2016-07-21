@@ -25,6 +25,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:maxLength="20"
+            style="@style/TextView.Shadow"
             android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -43,6 +44,7 @@
             tools:text="Lorem Ipsum lorem ipsum lorem ipsum. Lorem Ipsum lorem ipsum lorem ipsum."
             android:maxLength="50"
             android:ellipsize="end"
+            style="@style/TextView.Shadow"
             android:textAppearance="@style/TextAppearance.AppCompat.Title.Inverse"
             android:layout_below="@+id/dateText"
             android:layout_alignLeft="@+id/dateText"
@@ -60,6 +62,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead.Inverse"
             android:ellipsize="end"
             android:maxLength="300"
+            style="@style/TextView.Shadow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>

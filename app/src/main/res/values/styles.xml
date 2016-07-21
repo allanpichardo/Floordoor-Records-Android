@@ -29,4 +29,12 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="TextView.Shadow">
+        <item name="android:shadowColor">@android:color/darker_gray</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">2</item>
+    </style>
+
+    <style name="TextView">floordoorstyles</style>
 </resources>
