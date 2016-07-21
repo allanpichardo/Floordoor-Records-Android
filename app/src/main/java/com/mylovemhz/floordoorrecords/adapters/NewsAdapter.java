@@ -16,8 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mylovemhz.floordoorrecords.BuildConfig;
 import com.mylovemhz.floordoorrecords.R;
+import com.mylovemhz.floordoorrecords.net.Api;
 import com.mylovemhz.floordoorrecords.net.FdRss2Parser;
 import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.Callback;
@@ -69,7 +69,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> im
         PkRSS.Builder builder = new PkRSS.Builder(context);
         builder.parser(new FdRss2Parser());
         PkRSS pkRSS = builder.build();
-        pkRSS.load(BuildConfig.FLOORDOOR_RSS_URL)
+        pkRSS.load(Api.FLOORDOOR_RSS_URL)
                 .page(page)
                 .callback(this)
                 .async();

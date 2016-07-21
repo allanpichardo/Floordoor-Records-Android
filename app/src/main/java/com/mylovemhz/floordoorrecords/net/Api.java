@@ -23,6 +23,7 @@ import java.util.concurrent.TimeoutException;
 
 public class Api {
 
+    public static final String FLOORDOOR_RSS_URL = "http://www.floordoorrecords.com/feed/";
     public static final String URL_GET_VENUE = "https://download.floordoorrecords.com/api/venue/";
     public static final String URL_GET_PERFORMANCES = "https://download.floordoorrecords.com/api/performances/";
     public static final String URL_GET_ALBUM = "https://download.floordoorrecords.com/api/album/";

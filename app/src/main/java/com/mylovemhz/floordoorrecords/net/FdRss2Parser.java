@@ -7,7 +7,6 @@ import android.util.Log;
 import com.pkmmte.pkrss.Article;
 import com.pkmmte.pkrss.Enclosure;
 import com.pkmmte.pkrss.parser.Parser;
-import com.pkmmte.pkrss.parser.Rss2Parser;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -88,10 +87,6 @@ public class FdRss2Parser extends Parser {
                             // Generate ID
                             article.setId(Math.abs(article.hashCode()));
 
-                            // Remove content thumbnail
-                            if(article.getImage() != null && article.getContent() != null)
-                                article.setContent(article.getContent().replaceFirst("<img.+?>", ""));
-
                             // (Optional) Log a minimized version of the toString() output
                             log(TAG, article.toShortString(), Log.INFO);
 
@@ -138,10 +133,13 @@ public class FdRss2Parser extends Parser {
                 article.setTitle(xmlParser.getText());
             else if (tag.equalsIgnoreCase("description")) {
                 String encoded = xmlParser.getText();
-                article.setDescription(Html.fromHtml(encoded.replaceAll("<img.+?>", "")).toString());
+                //article.setDescription(Html.fromHtml(encoded.replaceAll("<img.+?>", "")).toString());
+                article.setDescription(Html.fromHtml(encoded).toString());
             }
-            else if (tag.equalsIgnoreCase("content:encoded"))
-                article.setContent(xmlParser.getText().replaceAll("[<](/)?div[^>]*[>]", ""));
+            else if (tag.equalsIgnoreCase("content:encoded")) {
+                String s = xmlParser.getText();
+                article.setContent(s);
+            }
             else if (tag.equalsIgnoreCase("wfw:commentRss"))
                 article.setComments(xmlParser.getText());
             else if (tag.equalsIgnoreCase("category"))

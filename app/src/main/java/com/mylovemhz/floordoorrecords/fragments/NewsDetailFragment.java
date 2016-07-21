@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -89,9 +88,13 @@ public class NewsDetailFragment extends Fragment {
 
     private void loadArticlePage() {
         try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("<HTML><HEAD><LINK href=\"file:///android_asset/style.css\" type=\"text/css\" rel=\"stylesheet\"/></HEAD><body>");
+            sb.append(article.getContent());
+            sb.append("</body></HTML>");
             webView.loadDataWithBaseURL(
                     "http://www.floordoorrecords.com",
-                    article.getContent(),
+                    sb.toString(),
                     "text/html",
                     "utf-8",
                     null
