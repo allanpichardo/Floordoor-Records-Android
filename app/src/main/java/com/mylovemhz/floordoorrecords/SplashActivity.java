@@ -1,5 +1,6 @@
 package com.mylovemhz.floordoorrecords;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -14,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -46,8 +48,13 @@ public class SplashActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if(!googleApiClient.isConnected()){
-            googleApiClient.connect();
+        int availability = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+        if(availability == ConnectionResult.SUCCESS){
+            if(!googleApiClient.isConnected()){
+                googleApiClient.connect();
+            }
+        }else{
+            displayGooglePlayErrorDialog(availability);
         }
     }
 
@@ -161,36 +168,17 @@ public class SplashActivity extends AppCompatActivity
             try {
                 connectionResult.startResolutionForResult(this, REQUEST_PLAY_SERVICES);
             } catch (IntentSender.SendIntentException e) {
-                warnUserGooglePlayServicesRequired();
+                displayGooglePlayErrorDialog(connectionResult.getErrorCode());
             }
         }else{
-            if(connectionResult.getErrorCode() == ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED){
-                warnUserGooglePlayServicesUpgradeRequired();
-            }
+            displayGooglePlayErrorDialog(connectionResult.getErrorCode());
         }
     }
 
-    private void warnUserGooglePlayServicesUpgradeRequired() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage(R.string.error_upgrade_play_services);
-        alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        alert.show();
-    }
-
-    private void warnUserGooglePlayServicesRequired() {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setMessage(R.string.error_no_play_services);
-        alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        alert.show();
+    private void displayGooglePlayErrorDialog(int errorCode) {
+        Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(
+                this, errorCode, REQUEST_PLAY_SERVICES
+        );
+        dialog.show();
     }
 }
